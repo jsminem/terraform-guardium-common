@@ -117,9 +117,25 @@ resource "aws_db_option_group" "audit" {
       value = var.audit_file_rotate_size
     }
 
+    dynamic "option_settings" {
+      for_each = var.audit_incl_users != "" ? [1] : []
+      content {
+        name  = "SERVER_AUDIT_INCL_USERS"
+        value = var.audit_incl_users
+      }
+    }
+
+    dynamic "option_settings" {
+      for_each = var.audit_excl_users != "" ? [1] : []
+      content {
+        name  = "SERVER_AUDIT_EXCL_USERS"
+        value = var.audit_excl_users
+      }
+    }
+
     option_settings {
-      name  = "SERVER_AUDIT_EXCL_USERS"
-      value = var.exclude_rdsadmin_user ? "rdsadmin" : ""
+      name  = "SERVER_AUDIT_QUERY_LOG_LIMIT"
+      value = var.audit_query_log_limit
     }
   }
 

@@ -1,3 +1,8 @@
+#
+# Copyright IBM Corp. 2025
+# SPDX-License-Identifier: Apache-2.0
+#
+
 data "aws_db_instance" "cluster_metadata" {
   db_instance_identifier = var.rds_cluster_identifier
 }

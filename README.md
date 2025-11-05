@@ -72,20 +72,22 @@ module "postgres_parameter_group" {
 }
 ```
 
-### RDS MariaDB Parameter Group
+### RDS MariaDB/MySQL Parameter Group
 
-Creates and manages RDS parameter groups for MariaDB with audit logging configurations.
+Creates and manages RDS option groups for MariaDB and MySQL with audit logging configurations using the MariaDB Audit Plugin.
 
 ```hcl
-module "mariadb_parameter_group" {
-  source = "IBM/terraform-guardium-common//modules/rds-mariadb-parameter-group"
+module "mariadb_mysql_parameter_group" {
+  source = "IBM/terraform-guardium-common//modules/rds-mariadb-mysql-parameter-group"
 
-  name_prefix = "guardium-mariadb"
-  family      = "mariadb10.6"
+  name_prefix           = "guardium-mariadb"
+  engine_name           = "mariadb"
+  major_engine_version  = "10.6"
+  exclude_rdsadmin_user = true  # Exclude rdsadmin user from audit logs (default: true)
   
-  parameters = {
-    server_audit_logging    = "1"
-    server_audit_events     = "CONNECT,QUERY,TABLE"
+  tags = {
+    Environment = "production"
+    ManagedBy   = "terraform"
   }
 }
 ```
@@ -118,15 +120,15 @@ module "postgres_sqs_registration" {
 }
 ```
 
-### RDS MariaDB CloudWatch Registration
+### RDS MariaDB/MySQL CloudWatch Registration
 
-Registers RDS MariaDB instances with Guardium Universal Connector via CloudWatch.
+Registers RDS MariaDB and MySQL instances with Guardium Universal Connector via CloudWatch.
 
 ```hcl
-module "mariadb_cloudwatch_registration" {
-  source = "IBM/terraform-guardium-common//modules/rds-mariadb-cloudwatch-registration"
+module "mariadb_mysql_cloudwatch_registration" {
+  source = "IBM/terraform-guardium-common//modules/rds-mariadb-mysql-cloudwatch-registration"
 
-  db_instance_identifier = "my-mariadb-db"
+  db_instance_identifier = "my-mariadb-db"  # or "my-mysql-db"
   guardium_host         = "guardium.example.com"
   guardium_port         = 8443
 }
@@ -171,17 +173,15 @@ Creates RDS parameter groups for PostgreSQL with audit logging enabled.
 - `parameter_group_name` - Name of the created parameter group
 - `parameter_group_arn` - ARN of the parameter group
 
-### rds-mariadb-parameter-group
-Creates RDS parameter groups for MariaDB with audit logging enabled.
+### rds-mariadb-mysql-parameter-group
+Creates RDS option groups for MariaDB and MySQL with the MariaDB Audit Plugin enabled.
 
 **Inputs:**
-- `name_prefix` - Prefix for parameter group name
-- `family` - MariaDB family (e.g., mariadb10.6)
-- `parameters` - Map of parameter names and values
-
-**Outputs:**
-- `parameter_group_name` - Name of the created parameter group
-- `parameter_group_arn` - ARN of the parameter group
+- `db_instance_identifier` - RDS instance identifier
+- `engine_name` - Database engine name (mariadb or mysql)
+- `major_engine_version` - Major engine version (e.g., 10.6 for MariaDB, 5.7 for MySQL)
+- `exclude_rdsadmin_user` - Whether to exclude the rdsadmin user from audit logs (default: true)
+- `tags` - Optional tags to apply to resources
 
 ### rds-postgres-cloudwatch-registration
 Registers PostgreSQL RDS instances with Guardium via CloudWatch.
@@ -200,10 +200,10 @@ Registers PostgreSQL RDS instances with Guardium via SQS.
 - `guardium_host` - Guardium host address
 
 ### rds-mariadb-cloudwatch-registration
-Registers MariaDB RDS instances with Guardium via CloudWatch.
+Registers MariaDB and MySQL RDS instances with Guardium via CloudWatch.
 
 **Inputs:**
-- `db_instance_identifier` - RDS instance identifier
+- `db_instance_identifier` - RDS instance identifier (MariaDB or MySQL)
 - `guardium_host` - Guardium host address
 - `guardium_port` - Guardium port (default: 8443)
 

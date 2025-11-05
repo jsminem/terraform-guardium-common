@@ -114,7 +114,7 @@ resource "aws_db_option_group" "audit" {
 
     option_settings {
       name  = "SERVER_AUDIT_EXCL_USERS"
-      value = "rdsadmin"
+      value = var.exclude_rdsadmin_user ? "rdsadmin" : ""
     }
   }
 

@@ -60,3 +60,9 @@ variable "force_failover" {
   default     = true
   description = "To failover the database instance, requires multi AZ databases. Results in minimal downtime"
 }
+
+variable "exclude_rdsadmin_user" {
+  type        = bool
+  description = "Whether to exclude the rdsadmin user from audit logs. The rdsadmin user queries the database every second for health checks, which can cause log files to grow quickly. Set to true to exclude rdsadmin from SERVER_AUDIT_EXCL_USERS."
+  default     = true
+}

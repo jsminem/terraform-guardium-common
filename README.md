@@ -80,10 +80,9 @@ Creates and manages RDS option groups for MariaDB and MySQL with audit logging c
 module "mariadb_mysql_parameter_group" {
   source = "IBM/terraform-guardium-common//modules/rds-mariadb-mysql-parameter-group"
 
-  name_prefix           = "guardium-mariadb"
-  engine_name           = "mariadb"
+  name_prefix           = "guardium-mariadb" # or "guardium-mysql"
+  engine_name           = "mariadb" # or "mysql"
   major_engine_version  = "10.6"
-  exclude_rdsadmin_user = true  # Exclude rdsadmin user from audit logs (default: true)
   
   tags = {
     Environment = "production"
@@ -180,7 +179,6 @@ Creates RDS option groups for MariaDB and MySQL with the MariaDB Audit Plugin en
 - `db_instance_identifier` - RDS instance identifier
 - `engine_name` - Database engine name (mariadb or mysql)
 - `major_engine_version` - Major engine version (e.g., 10.6 for MariaDB, 5.7 for MySQL)
-- `exclude_rdsadmin_user` - Whether to exclude the rdsadmin user from audit logs (default: true)
 - `tags` - Optional tags to apply to resources
 
 ### rds-postgres-cloudwatch-registration
